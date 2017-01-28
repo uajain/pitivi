@@ -18,6 +18,7 @@ import os
 from gettext import gettext as _
 
 from gi.repository import Gdk
+from gi.repository import Gio
 from gi.repository import Gst
 from gi.repository import Gtk
 
@@ -25,9 +26,9 @@ from pitivi.configure import get_ui_dir
 from pitivi.utils.ui import audio_channels
 from pitivi.utils.ui import audio_rates
 from pitivi.utils.ui import frame_rates
+from pitivi.utils.ui import get_proxy_target
 from pitivi.utils.ui import get_value_from_model
 from pitivi.utils.ui import pixel_aspect_ratios
-
 
 class ClipMediaPropsDialog(object):
     """Displays the properties of an asset.
@@ -44,6 +45,7 @@ class ClipMediaPropsDialog(object):
         info = asset.get_info()
         self.audio_streams = info.get_audio_streams()
         self.video_streams = info.get_video_streams()
+        self.parent_path = os.path.dirname(get_proxy_target(asset).props.id)
         self.has_audio = False
         self.has_video = False
         self.is_image = False
@@ -67,6 +69,7 @@ class ClipMediaPropsDialog(object):
         self.aspect_ratio = builder.get_object("aspect_ratio")
         self.sample_rate = builder.get_object("sample_rate")
         # Various other layout widgets
+        self.open_folder = builder.get_object("open_folder_button")
         self.frame1 = builder.get_object("frame1")
         self.frame2 = builder.get_object("frame2")
         self.hbox2 = builder.get_object("hbox2")
@@ -136,6 +139,7 @@ class ClipMediaPropsDialog(object):
 
         self.dialog.connect("key-press-event", self._keyPressCb)
         self.dialog.connect("response", self.__response_cb)
+        self.open_folder.connect("clicked", self._open_folder_cb)
         self.dialog.run()
 
     def _apply(self):
@@ -169,3 +173,6 @@ class ClipMediaPropsDialog(object):
         if event.keyval in (Gdk.KEY_Escape, Gdk.KEY_Q, Gdk.KEY_q):
             self.dialog.destroy()
         return True
+
+    def _open_folder_cb(self, unused_button):
+        Gio.AppInfo.launch_default_for_uri(self.parent_path, None)
