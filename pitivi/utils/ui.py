@@ -511,6 +511,8 @@ def get_combo_value(combo):
     active_iter = combo.get_active_iter()
     if not active_iter:
         return None
+    if combo.get_has_entry():
+        combo.get_child().set_text(combo.props.model.get_value(active_iter, 0))
     return combo.props.model.get_value(active_iter, 1)
 
 
