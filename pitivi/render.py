@@ -1175,6 +1175,14 @@ class RenderDialog(Loggable):
         framerate = get_combo_value(combo)
         self.project.videorate = framerate
 
+    def _frameRateEntryChangedCb(self, entry, unused_event):
+        print(entry.get_text())
+        try:
+            fraction = float(entry.get_text()).as_integer_ratio()
+            self.project.videorate = Gst.Fraction(fraction[0], fraction[1])
+        except:
+            self.warning("Please use fps values: %s", e)
+
     def _videoEncoderComboChangedCb(self, combo):
         if self._setting_encoding_profile:
             return

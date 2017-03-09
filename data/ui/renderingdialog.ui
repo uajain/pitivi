@@ -420,12 +420,19 @@
                             <property name="visible">True</property>
                             <property name="can_focus">False</property>
                             <property name="halign">start</property>
+                            <property name="has_entry">True</property>
                             <signal name="changed" handler="_frameRateComboChangedCb" swapped="no"/>
                             <child>
                               <object class="GtkCellRendererText" id="renderer3"/>
                               <attributes>
                                 <attribute name="text">0</attribute>
                               </attributes>
+                            </child>
+                            <child internal-child="entry">
+                              <object class="GtkEntry" id="combobox-entry">
+                                <property name="can_focus">True</property>
+                                <signal name="focus-out-event" handler="_frameRateEntryChangedCb" swapped="no"/>
+                              </object>
                             </child>
                             <child internal-child="accessible">
                               <object class="AtkObject" id="frame_rate_combo-atkobject">
